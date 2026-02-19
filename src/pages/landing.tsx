@@ -19,7 +19,7 @@ export function LandingPage() {
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Button asChild size="lg" className="min-h-[44px]">
-              <Link to="/signup">Get Started</Link>
+              <Link to="/login-/-signup">Get Started</Link>
             </Button>
             <Button asChild variant="secondary" size="lg" className="min-h-[44px]">
               <Link to="/docs">Self-host Guide</Link>
@@ -80,12 +80,12 @@ export function LandingPage() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Button asChild size="lg">
-              <Link to="/signup">
+              <Link to="/login-/-signup">
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="secondary" size="lg">
-              <Link to="/login">Log in</Link>
+              <Link to="/login-/-signup">Log in</Link>
             </Button>
           </div>
         </div>
