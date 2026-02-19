@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Activity, Bot, ArrowRight, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useAgentActivity } from '@/hooks/use-command-center'
+import { useAgentActivity, useApproveAgentOutput } from '@/hooks/use-command-center'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -20,8 +20,17 @@ function formatRelative(iso: string) {
 
 export function AgentActivityFeed() {
   const { data: items = [], isLoading } = useAgentActivity()
+  const approveMutation = useApproveAgentOutput()
 
   const pending = items.filter((i) => i.pendingApproval)
+
+  const handleApprove = (id: string) => {
+    approveMutation.mutate({ id, action: 'approve' })
+  }
+
+  const handleDismiss = (id: string) => {
+    approveMutation.mutate({ id, action: 'dismiss' })
+  }
 
   return (
     <Card className="h-full transition-all duration-200 hover:shadow-card-hover border-border hover:border-border-strong">
@@ -75,10 +84,22 @@ export function AgentActivityFeed() {
                     <p className="text-xs text-foreground-subdued mt-1">{formatRelative(item.createdAt)}</p>
                     {item.pendingApproval && (
                       <div className="flex gap-2 mt-2">
-                        <Button size="sm" variant="primary" className="h-8 text-xs min-h-[32px]">
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          className="h-8 text-xs min-h-[32px]"
+                          onClick={() => handleApprove(item.id)}
+                          disabled={approveMutation.isPending}
+                        >
                           Approve
                         </Button>
-                        <Button size="sm" variant="ghost" className="h-8 text-xs min-h-[32px]">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 text-xs min-h-[32px]"
+                          onClick={() => handleDismiss(item.id)}
+                          disabled={approveMutation.isPending}
+                        >
                           Dismiss
                         </Button>
                       </div>

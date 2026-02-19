@@ -77,8 +77,17 @@ export function QuickActionsToolbar({
         size="sm"
         className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.02] active:scale-[0.98] transition-transform"
         onClick={onImportCsv}
+        asChild={!onImportCsv}
       >
-        <Upload className="h-4 w-4" aria-hidden /> Import CSV
+        {onImportCsv ? (
+          <>
+            <Upload className="h-4 w-4" aria-hidden /> Import CSV
+          </>
+        ) : (
+          <Link to="/dashboard/finance?tab=import" className="inline-flex items-center gap-2">
+            <Upload className="h-4 w-4" aria-hidden /> Import CSV
+          </Link>
+        )}
       </Button>
     </div>
   )

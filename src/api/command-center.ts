@@ -73,3 +73,10 @@ export async function globalSearch(query: string): Promise<GlobalSearchResult[]>
   if (!query.trim()) return []
   return api.get<GlobalSearchResult[]>(`${API}/search?q=${encodeURIComponent(query)}`)
 }
+
+export async function approveAgentOutput(
+  id: string,
+  action: 'approve' | 'dismiss'
+): Promise<{ ok: boolean }> {
+  return api.post<{ ok: boolean }>(`${API}/agent/approve`, { id, action })
+}

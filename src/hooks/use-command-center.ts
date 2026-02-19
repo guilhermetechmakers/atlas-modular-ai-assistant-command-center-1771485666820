@@ -122,3 +122,18 @@ export function useGlobalSearch(query: string) {
     enabled: query.trim().length >= 2,
   })
 }
+
+export function useApproveAgentOutput() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, action }: { id: string; action: 'approve' | 'dismiss' }) =>
+      commandCenterApi.approveAgentOutput(id, action),
+    onSuccess: (_, { action }) => {
+      queryClient.invalidateQueries({ queryKey: commandCenterKeys.agentActivity() })
+      toast.success(action === 'approve' ? 'Approved' : 'Dismissed')
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || 'Failed to update')
+    },
+  })
+}

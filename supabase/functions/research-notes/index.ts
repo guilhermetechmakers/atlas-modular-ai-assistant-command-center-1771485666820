@@ -48,6 +48,10 @@ Deno.serve(async (req) => {
     const id = url.searchParams.get('id') ?? undefined
     const tag = url.searchParams.get('tag') ?? undefined
     const q = url.searchParams.get('q') ?? undefined
+    const limit = Math.min(Math.max(1, parseInt(url.searchParams.get('limit') ?? '20', 10)), 100)
+    const offset = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0', 10))
+    const orderBy = (url.searchParams.get('order_by') ?? 'updated_at') as string
+    const orderAsc = url.searchParams.get('order') === 'asc'
 
     let body: Record<string, unknown> = {}
     if (req.method !== 'GET' && req.body) {
@@ -75,6 +79,8 @@ Deno.serve(async (req) => {
       })
     }
 
+    const orderColumn = orderBy === 'title' ? 'title' : 'updated_at'
+
     // GET list / search
     if (req.method === 'GET') {
       if (q && q.trim()) {
@@ -87,23 +93,51 @@ Deno.serve(async (req) => {
         if (tag && tag.trim()) {
           rows = rows.filter((r) => r.tags && r.tags.includes(tag.trim()))
         }
-        return new Response(JSON.stringify(rows), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
+        const total = rows.length
+        if (orderColumn === 'title') {
+          rows = [...rows].sort((a, b) =>
+            orderAsc
+              ? (a.title ?? '').localeCompare(b.title ?? '')
+              : (b.title ?? '').localeCompare(a.title ?? '')
+          )
+        } else if (orderColumn === 'updated_at') {
+          rows = [...rows].sort((a, b) => {
+            const tA = new Date(a.updated_at).getTime()
+            const tB = new Date(b.updated_at).getTime()
+            return orderAsc ? tA - tB : tB - tA
+          })
+        }
+        const paginated = rows.slice(offset, offset + limit)
+        return new Response(
+          JSON.stringify({ data: paginated, total }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
       }
+      let countQuery = supabase
+        .from('research_notes')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+      if (tag && tag.trim()) {
+        countQuery = countQuery.contains('tags', [tag.trim()])
+      }
+      const { count: totalCount } = await countQuery
+      const total = totalCount ?? 0
       let query = supabase
         .from('research_notes')
         .select('*')
         .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+        .order(orderColumn, { ascending: orderAsc })
+        .range(offset, offset + limit - 1)
       if (tag && tag.trim()) {
         query = query.contains('tags', [tag.trim()])
       }
       const { data, error } = await query
       if (error) throw error
-      return new Response(JSON.stringify(data ?? []), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      const list = data ?? []
+      return new Response(
+        JSON.stringify({ data: list, total }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
     // POST create
