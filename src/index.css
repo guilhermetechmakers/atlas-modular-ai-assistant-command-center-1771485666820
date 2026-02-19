@@ -1,68 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Atlas design system — dark mode (UI Guide) */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Dominant dark backgrounds */
+  --background: 24 24 27; /* #18181B */
+  --background-secondary: 35 35 38; /* #232326 */
+  --card: 28 28 30; /* #1C1C1E */
+  --foreground: 255 255 255;
+  --foreground-muted: 229 231 235; /* #E5E7EB */
+  --foreground-subdued: 161 161 170; /* #A1A1AA */
+  /* Primary accent */
+  --primary: 255 153 0; /* #FF9900 orange */
+  --primary-foreground: 24 24 27;
+  /* Secondary accents */
+  --accent-cyan: 34 211 238; /* #22D3EE */
+  --accent-purple: 167 139 250; /* #A78BFA */
+  --accent-pink: 244 114 182; /* #F472B6 */
+  --accent-amber: 245 158 66; /* #F59E42 */
+  /* UI borders & dividers */
+  --border: 39 39 42; /* #27272A */
+  --border-strong: 63 63 70; /* #3F3F46 */
+  /* Semantic */
+  --success: 34 197 94;
+  --warning: 245 158 11;
+  --error: 239 68 68;
+  --ring: 255 153 0;
+  --input: 39 39 42;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  html {
+    @apply antialiased;
   }
-  a:hover {
-    color: #747bff;
+  body {
+    @apply bg-background text-foreground-muted font-sans text-base min-h-screen;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
   }
-  button {
-    background-color: #f9f9f9;
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground font-bold;
+  }
+  h1 { @apply text-3xl md:text-4xl; }
+  h2 { @apply text-2xl md:text-3xl; }
+  h3 { @apply text-xl md:text-2xl; }
+  /* Focus visible for accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .card-atlas {
+    @apply rounded-xl border border-border bg-card p-4 md:p-5 shadow-[0_2px_8px_rgba(0,0,0,0.6)];
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .card-atlas:hover {
+    @apply border-border-strong shadow-[0_4px_16px_rgba(0,0,0,0.6)];
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6), 0 0 0 1px rgb(var(--primary) / 0.15);
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium min-h-[40px];
+    @apply bg-primary text-primary-foreground;
+    @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium min-h-[40px];
+    @apply bg-background-secondary text-foreground-muted border border-border;
+    @apply transition-all duration-200 hover:scale-[1.02] hover:border-border-strong hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
   }
 }
