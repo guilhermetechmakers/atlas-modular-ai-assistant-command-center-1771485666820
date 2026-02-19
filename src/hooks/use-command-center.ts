@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import * as commandCenterApi from '@/api/command-center'
 import type { GlobalSearchResult } from '@/types/command-center'
 
@@ -20,6 +21,56 @@ async function safeGet<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   } catch {
     return fallback
   }
+}
+
+export function useDashboardItems() {
+  return useQuery({
+    queryKey: commandCenterKeys.dashboard(),
+    queryFn: () => safeGet(commandCenterApi.getDashboardItems, []),
+  })
+}
+
+export function useCreateDashboardItem() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: commandCenterApi.createDashboardItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: commandCenterKeys.dashboard() })
+      toast.success('Dashboard item created')
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || 'Failed to create dashboard item')
+    },
+  })
+}
+
+export function useUpdateDashboardItem() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: commandCenterApi.UpdateDashboardCommandCenterInput }) =>
+      commandCenterApi.updateDashboardItem(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: commandCenterKeys.dashboard() })
+      toast.success('Dashboard item updated')
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || 'Failed to update dashboard item')
+    },
+  })
+}
+
+export function useDeleteDashboardItem() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: commandCenterApi.deleteDashboardItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: commandCenterKeys.dashboard() })
+      toast.success('Dashboard item deleted')
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || 'Failed to delete dashboard item')
+    },
+  })
 }
 
 export function useTodayEvents() {

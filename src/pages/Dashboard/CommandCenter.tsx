@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Bot, Sparkles } from 'lucide-react'
 import {
@@ -16,8 +16,15 @@ import { cn } from '@/lib/utils'
 export default function CommandCenterPage() {
   const [selectedRepoId, setSelectedRepoId] = useState<string | undefined>(undefined)
 
+  useEffect(() => {
+    document.title = 'Command Center | Atlas'
+    return () => {
+      document.title = 'Atlas'
+    }
+  }, [])
+
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in" role="main" aria-label="Command Center dashboard">
       {/* Header: title, description, notifications & audit */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
