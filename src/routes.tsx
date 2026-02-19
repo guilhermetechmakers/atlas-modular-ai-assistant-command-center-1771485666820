@@ -6,6 +6,7 @@ import { SignupPage } from '@/pages/signup'
 import { LoginSignupPage } from '@/pages/Login/Signup'
 import { DashboardOverviewPage } from '@/pages/dashboard-overview'
 import CommandCenterPage from '@/pages/Dashboard/CommandCenter'
+import AddContentPage from '@/pages/Create/AddContent'
 import ProjectsPage from '@/pages/Dashboard/ProjectsPage'
 import GitHubOAuthCallbackPage from '@/pages/GitHubOAuthCallback'
 import GitHubIntegrationAdminPage from '@/pages/Dashboard/GitHubIntegrationAdmin'
@@ -26,6 +27,11 @@ export const router = createBrowserRouter([
     path: '/dashboard-/-command-center',
     element: <DashboardLayout />,
     children: [{ index: true, element: <CommandCenterPage /> }],
+  },
+  {
+    path: '/create-/-add-content',
+    element: <DashboardLayout />,
+    children: [{ index: true, element: <AddContentPage /> }],
   },
   {
     path: '/content-pipeline',

@@ -5,6 +5,7 @@ import {
   TodayPanel,
   GitHubSummaryCard,
   ContentPipelineCard,
+  ResearchSummaryCard,
   FinanceSnapshotCard,
   AgentActivityFeed,
   QuickActionsToolbar,
@@ -85,10 +86,10 @@ export default function CommandCenterPage() {
         <QuickActionsToolbar />
       </section>
 
-      {/* Summary cards: GitHub, Content, Finance */}
+      {/* Summary cards: GitHub, Content, Research, Finance */}
       <section
         aria-label="Summary cards"
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4"
       >
         <div className="animate-slide-up" style={{ animationDelay: '0ms', animationFillMode: 'backwards' }}>
           <GitHubSummaryCard
@@ -100,6 +101,9 @@ export default function CommandCenterPage() {
           <ContentPipelineCard />
         </div>
         <div className="animate-slide-up" style={{ animationDelay: '100ms', animationFillMode: 'backwards' }}>
+          <ResearchSummaryCard />
+        </div>
+        <div className="animate-slide-up" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
           <FinanceSnapshotCard />
         </div>
       </section>

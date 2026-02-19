@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Plus, FileText, Bot, Upload } from 'lucide-react'
+import { Plus, FileText, Bot, Upload, PenLine } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -60,6 +60,16 @@ export function QuickActionsToolbar({
             <FileText className="h-4 w-4" aria-hidden /> New note
           </Link>
         )}
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.02] active:scale-[0.98] transition-transform"
+        asChild
+      >
+        <Link to="/create-/-add-content" className="inline-flex items-center gap-2">
+          <PenLine className="h-4 w-4" aria-hidden /> Create content
+        </Link>
       </Button>
       <Button
         variant="secondary"
