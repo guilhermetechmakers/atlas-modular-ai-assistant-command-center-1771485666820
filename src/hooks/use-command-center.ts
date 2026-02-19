@@ -108,6 +108,18 @@ export function useRecentTransactions() {
   })
 }
 
+export const commandCenterKeysRunway = {
+  runway: () => [...commandCenterKeys.all, 'finance', 'runway'] as const,
+}
+
+export function useRunway() {
+  return useQuery({
+    queryKey: commandCenterKeysRunway.runway(),
+    queryFn: () =>
+      safeGet(commandCenterApi.getRunway, { runwayDays: 0, hasAlert: false }),
+  })
+}
+
 export function useAgentActivity() {
   return useQuery({
     queryKey: commandCenterKeys.agentActivity(),

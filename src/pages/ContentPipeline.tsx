@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { FileText, Plus } from 'lucide-react'
 import {
   IdeasList,
@@ -14,7 +15,9 @@ import { Dialog } from '@/components/ui/dialog'
 import type { ContentIdea } from '@/types/content-pipeline'
 
 export default function ContentPipelinePage() {
-  const [activeTab, setActiveTab] = useState('ideas')
+  const [searchParams] = useSearchParams()
+  const tabFromUrl = searchParams.get('tab')
+  const [activeTab, setActiveTab] = useState(tabFromUrl && ['ideas', 'drafts', 'assets', 'repurpose', 'publish'].includes(tabFromUrl) ? tabFromUrl : 'ideas')
   const [editorOpen, setEditorOpen] = useState(false)
   const [editorDraftId, setEditorDraftId] = useState<string | null>(null)
   const [initialFromIdea, setInitialFromIdea] = useState<
@@ -27,6 +30,12 @@ export default function ContentPipelinePage() {
       document.title = 'Atlas'
     }
   }, [])
+
+  useEffect(() => {
+    if (tabFromUrl && ['ideas', 'drafts', 'assets', 'repurpose', 'publish'].includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl)
+    }
+  }, [tabFromUrl])
 
   const openNewDraft = (fromIdea?: ContentIdea) => {
     setEditorDraftId(null)

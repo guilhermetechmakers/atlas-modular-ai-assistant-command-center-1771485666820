@@ -41,8 +41,10 @@ export function ContentPipelineCard() {
             <p className="text-sm text-foreground-muted mb-1">No due drafts or scheduled posts</p>
             <p className="text-xs text-foreground-subdued mb-4">Add an idea or open Content to get started</p>
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
-              <Button variant="outline" size="sm" className="inline-flex items-center gap-2 min-h-[44px]">
-                <Plus className="h-4 w-4" aria-hidden /> Quick-create idea
+              <Button variant="outline" size="sm" className="inline-flex items-center gap-2 min-h-[44px]" asChild>
+                <Link to="/dashboard/content?tab=ideas" className="inline-flex items-center gap-2">
+                  <Plus className="h-4 w-4" aria-hidden /> Quick-create idea
+                </Link>
               </Button>
               <Button variant="secondary" size="sm" asChild>
                 <Link to="/dashboard/content" className="inline-flex items-center gap-2 min-h-[44px]">
@@ -89,8 +91,10 @@ export function ContentPipelineCard() {
         )}
         {!isEmpty && (
           <div className="flex gap-2 pt-2">
-            <Button variant="outline" size="sm" className="flex-1 inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.01] transition-transform">
-              <Plus className="h-4 w-4" aria-hidden /> Quick-create idea
+            <Button variant="outline" size="sm" className="flex-1 inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.01] transition-transform" asChild>
+              <Link to="/dashboard/content?tab=ideas" className="inline-flex items-center gap-2">
+                <Plus className="h-4 w-4" aria-hidden /> Quick-create idea
+              </Link>
             </Button>
             <Button variant="secondary" size="sm" asChild>
               <Link to="/dashboard/content" className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.01] transition-transform">

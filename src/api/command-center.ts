@@ -65,6 +65,15 @@ export async function getRecentTransactions(): Promise<Transaction[]> {
   return api.get<Transaction[]>(`${API}/finance/transactions`)
 }
 
+export interface RunwayData {
+  runwayDays: number
+  hasAlert: boolean
+}
+
+export async function getRunway(): Promise<RunwayData> {
+  return api.get<RunwayData>(`${API}/finance/runway`)
+}
+
 export async function getAgentActivity(): Promise<AgentOutput[]> {
   return api.get<AgentOutput[]>(`${API}/agent/activity`)
 }

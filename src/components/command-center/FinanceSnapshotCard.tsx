@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Wallet, AlertTriangle, ArrowRight, WalletMinimal } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useRecentTransactions } from '@/hooks/use-command-center'
+import { useRecentTransactions, useRunway } from '@/hooks/use-command-center'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -10,9 +10,10 @@ const RUNWAY_ALERT_DAYS = 90
 
 export function FinanceSnapshotCard() {
   const { data: transactions = [], isLoading } = useRecentTransactions()
+  const { data: runway } = useRunway()
 
   const recent = transactions.slice(0, 5)
-  const runwayAlert = false
+  const runwayAlert = runway?.hasAlert ?? false
 
   return (
     <Card className="h-full transition-all duration-200 hover:shadow-card-hover border-border hover:border-border-strong">

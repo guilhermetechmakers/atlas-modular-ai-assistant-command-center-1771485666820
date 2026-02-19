@@ -87,6 +87,11 @@ Deno.serve(async (req) => {
       return jsonResponse([])
     }
 
+    // Finance runway – placeholder (compute from ledger when available)
+    if (path === 'finance/runway') {
+      return jsonResponse({ runwayDays: 0, hasAlert: false })
+    }
+
     // Agent activity – placeholder (extend with agent_outputs table when available)
     if (path === 'agent/activity') {
       return jsonResponse([])

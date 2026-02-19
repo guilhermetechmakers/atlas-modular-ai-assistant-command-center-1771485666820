@@ -22,6 +22,8 @@ import { NotificationCenter } from '@/components/notifications'
 
 const SIDEBAR_COLLAPSED_KEY = 'atlas-sidebar-collapsed'
 
+const commandCenterPaths = ['/dashboard', '/dashboard/', '/dashboard/command-center', '/dashboard-/-command-center']
+
 const navItems = [
   { to: '/dashboard', label: 'Command Center', icon: LayoutDashboard },
   { to: '/dashboard/projects', label: 'Projects', icon: FolderGit2 },
@@ -92,25 +94,32 @@ export function DashboardLayout() {
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-2">
           <ul className="space-y-1">
-            {navItems.map(({ to, label, icon: Icon }) => (
-              <li key={to}>
-                <NavLink
-                  to={to}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-primary/10 text-primary border-l-4 border-primary'
-                        : 'text-foreground-muted hover:bg-background hover:text-foreground',
-                      collapsed && 'justify-center px-2'
-                    )
-                  }
-                >
-                  <Icon className="h-5 w-5 shrink-0" aria-hidden />
-                  {!collapsed && <span>{label}</span>}
-                </NavLink>
-              </li>
-            ))}
+            {navItems.map(({ to, label, icon: Icon }) => {
+              const isCommandCenter = to === '/dashboard'
+              const isActive = isCommandCenter
+                ? commandCenterPaths.includes(location.pathname)
+                : undefined
+              return (
+                <li key={to}>
+                  <NavLink
+                    to={to}
+                    end={!isCommandCenter}
+                    className={({ isActive: navActive }) =>
+                      cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                        (isActive ?? navActive)
+                          ? 'bg-primary/10 text-primary border-l-4 border-primary'
+                          : 'text-foreground-muted hover:bg-background hover:text-foreground',
+                        collapsed && 'justify-center px-2'
+                      )
+                    }
+                  >
+                    <Icon className="h-5 w-5 shrink-0" aria-hidden />
+                    {!collapsed && <span>{label}</span>}
+                  </NavLink>
+                </li>
+              )
+            })}
           </ul>
           <ul className="mt-8 space-y-1 border-t border-border pt-4">
             {bottomItems.map(({ to, label, icon: Icon }) => (
@@ -158,24 +167,31 @@ export function DashboardLayout() {
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-2">
           <ul className="space-y-1">
-            {navItems.map(({ to, label, icon: Icon }) => (
-              <li key={to}>
-                <NavLink
-                  to={to}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium',
-                      isActive
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-foreground-muted hover:bg-background hover:text-foreground'
-                    )
-                  }
-                >
-                  <Icon className="h-5 w-5 shrink-0" aria-hidden />
-                  <span>{label}</span>
-                </NavLink>
-              </li>
-            ))}
+            {navItems.map(({ to, label, icon: Icon }) => {
+              const isCommandCenter = to === '/dashboard'
+              const isActive = isCommandCenter
+                ? commandCenterPaths.includes(location.pathname)
+                : undefined
+              return (
+                <li key={to}>
+                  <NavLink
+                    to={to}
+                    end={!isCommandCenter}
+                    className={({ isActive: navActive }) =>
+                      cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium',
+                        (isActive ?? navActive)
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-foreground-muted hover:bg-background hover:text-foreground'
+                      )
+                    }
+                  >
+                    <Icon className="h-5 w-5 shrink-0" aria-hidden />
+                    <span>{label}</span>
+                  </NavLink>
+                </li>
+              )
+            })}
           </ul>
           <ul className="mt-8 space-y-1 border-t border-border pt-4">
             {bottomItems.map(({ to, label, icon: Icon }) => (
