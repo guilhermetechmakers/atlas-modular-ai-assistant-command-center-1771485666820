@@ -16,6 +16,14 @@ export interface CalendarEvent {
   allDay?: boolean
 }
 
+export interface FocusBlock {
+  id: string
+  title: string
+  start: string
+  end: string
+  completed?: boolean
+}
+
 export interface QuickTask {
   id: string
   label: string

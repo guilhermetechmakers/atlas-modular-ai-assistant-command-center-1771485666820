@@ -2,6 +2,7 @@ import { api } from '@/lib/api'
 import type {
   DashboardCommandCenter,
   CalendarEvent,
+  FocusBlock,
   QuickTask,
   ContentDraft,
   ScheduledPost,
@@ -51,6 +52,10 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
 
 export async function getQuickTasks(): Promise<QuickTask[]> {
   return api.get<QuickTask[]>(`${API}/today/tasks`)
+}
+
+export async function getFocusBlocks(): Promise<FocusBlock[]> {
+  return api.get<FocusBlock[]>(`${API}/today/focus-blocks`)
 }
 
 export async function getContentDrafts(): Promise<ContentDraft[]> {

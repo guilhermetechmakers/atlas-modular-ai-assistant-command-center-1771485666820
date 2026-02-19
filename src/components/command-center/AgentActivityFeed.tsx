@@ -83,7 +83,7 @@ export function AgentActivityFeed() {
                     <p className="text-foreground line-clamp-2">{item.summary}</p>
                     <p className="text-xs text-foreground-subdued mt-1">{formatRelative(item.createdAt)}</p>
                     {item.pendingApproval && (
-                      <div className="flex gap-2 mt-2">
+                      <div className="flex flex-wrap gap-2 mt-2">
                         <Button
                           size="sm"
                           variant="primary"
@@ -92,6 +92,20 @@ export function AgentActivityFeed() {
                           disabled={approveMutation.isPending}
                         >
                           Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-8 text-xs min-h-[32px]"
+                          asChild
+                        >
+                          <Link
+                            to="/dashboard/calendar"
+                            state={{ createTaskFromSuggestion: item.summary }}
+                            className="inline-flex items-center gap-1"
+                          >
+                            Create task
+                          </Link>
                         </Button>
                         <Button
                           size="sm"

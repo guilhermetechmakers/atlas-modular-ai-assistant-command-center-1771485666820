@@ -8,6 +8,7 @@ export const commandCenterKeys = {
   dashboard: () => [...commandCenterKeys.all, 'dashboard'] as const,
   todayEvents: () => [...commandCenterKeys.all, 'today', 'events'] as const,
   quickTasks: () => [...commandCenterKeys.all, 'today', 'tasks'] as const,
+  focusBlocks: () => [...commandCenterKeys.all, 'today', 'focus-blocks'] as const,
   contentDrafts: () => [...commandCenterKeys.all, 'content', 'drafts'] as const,
   scheduledPosts: () => [...commandCenterKeys.all, 'content', 'scheduled'] as const,
   transactions: () => [...commandCenterKeys.all, 'finance', 'transactions'] as const,
@@ -84,6 +85,13 @@ export function useQuickTasks() {
   return useQuery({
     queryKey: commandCenterKeys.quickTasks(),
     queryFn: () => safeGet(commandCenterApi.getQuickTasks, []),
+  })
+}
+
+export function useFocusBlocks() {
+  return useQuery({
+    queryKey: commandCenterKeys.focusBlocks(),
+    queryFn: () => safeGet(commandCenterApi.getFocusBlocks, []),
   })
 }
 

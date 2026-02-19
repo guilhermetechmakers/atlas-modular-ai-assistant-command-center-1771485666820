@@ -72,6 +72,31 @@ Deno.serve(async (req) => {
       return jsonResponse([])
     }
 
+    // Focus blocks – from focus_blocks table
+    if (path === 'today/focus-blocks') {
+      if (!userId) return jsonResponse([])
+      const todayStart = new Date()
+      todayStart.setHours(0, 0, 0, 0)
+      const todayEnd = new Date()
+      todayEnd.setHours(23, 59, 59, 999)
+      const { data, error } = await supabase
+        .from('focus_blocks')
+        .select('id, title, start_at, end_at, completed')
+        .eq('user_id', userId)
+        .gte('start_at', todayStart.toISOString())
+        .lte('start_at', todayEnd.toISOString())
+        .order('start_at', { ascending: true })
+      if (error) return jsonResponse([])
+      const items = (data ?? []).map((r) => ({
+        id: r.id,
+        title: r.title,
+        start: r.start_at,
+        end: r.end_at,
+        completed: r.completed ?? false,
+      }))
+      return jsonResponse(items)
+    }
+
     // Content drafts – placeholder
     if (path === 'content/drafts') {
       return jsonResponse([])
@@ -112,22 +137,62 @@ Deno.serve(async (req) => {
     if (path === 'search' && q.trim().length >= 2) {
       const results: Array<{ type: string; id: string; title: string; subtitle?: string }> = []
       if (!userId) return jsonResponse(results)
+      const query = q.trim()
 
-      // Search research_notes
+      // Search research_notes – use full-text search RPC when available, else ilike
       try {
-        const { data: notes } = await supabase
-          .from('research_notes')
-          .select('id, title')
-          .eq('user_id', userId)
-          .ilike('title', `%${q.trim()}%`)
-          .limit(5)
-        if (notes?.length) {
-          for (const n of notes) {
-            results.push({ type: 'note', id: n.id, title: n.title ?? '', subtitle: 'Research note' })
+        const { data: notes } = await supabase.rpc('research_notes_search', {
+          p_user_id: userId,
+          p_query: query,
+        })
+        const noteList = Array.isArray(notes) ? notes : []
+        for (const n of noteList.slice(0, 5)) {
+          results.push({
+            type: 'note',
+            id: n.id ?? '',
+            title: n.title ?? '',
+            subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : 'Research note',
+          })
+        }
+        if (noteList.length === 0) {
+          const { data: ilikeNotes } = await supabase
+            .from('research_notes')
+            .select('id, title, summary')
+            .eq('user_id', userId)
+            .ilike('title', `%${query}%`)
+            .limit(5)
+          if (ilikeNotes?.length) {
+            for (const n of ilikeNotes) {
+              results.push({
+                type: 'note',
+                id: n.id,
+                title: n.title ?? '',
+                subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : 'Research note',
+              })
+            }
           }
         }
       } catch {
-        // ignore
+        try {
+          const { data: notes } = await supabase
+            .from('research_notes')
+            .select('id, title, summary')
+            .eq('user_id', userId)
+            .ilike('title', `%${query}%`)
+            .limit(5)
+          if (notes?.length) {
+            for (const n of notes) {
+              results.push({
+                type: 'note',
+                id: n.id,
+                title: n.title ?? '',
+                subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : 'Research note',
+              })
+            }
+          }
+        } catch {
+          // ignore
+        }
       }
 
       return jsonResponse(results)

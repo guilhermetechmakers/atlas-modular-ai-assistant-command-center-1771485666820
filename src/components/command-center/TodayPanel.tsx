@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Calendar, ListTodo, ArrowRight, CalendarX2 } from 'lucide-react'
-import { useTodayEvents, useQuickTasks } from '@/hooks/use-command-center'
+import { Calendar, ListTodo, ArrowRight, CalendarX2, Timer } from 'lucide-react'
+import { useTodayEvents, useQuickTasks, useFocusBlocks } from '@/hooks/use-command-center'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -14,6 +14,7 @@ function formatTime(iso: string) {
 export function TodayPanel() {
   const { data: events = [], isLoading: eventsLoading } = useTodayEvents()
   const { data: tasks = [], isLoading: tasksLoading } = useQuickTasks()
+  const { data: focusBlocks = [], isLoading: focusBlocksLoading } = useFocusBlocks()
 
   return (
     <Card className="h-full transition-all duration-200 hover:shadow-card-hover border-border hover:border-border-strong">
@@ -58,6 +59,31 @@ export function TodayPanel() {
               </li>
             ))}
           </ul>
+        )}
+
+        {focusBlocksLoading ? (
+          <Skeleton className="h-10 w-full rounded-lg" />
+        ) : focusBlocks.length > 0 && (
+          <div className="pt-2 border-t border-border">
+            <p className="text-xs font-medium text-foreground-muted mb-2">Focus blocks</p>
+            <ul className="space-y-2" aria-label="Focus blocks">
+              {focusBlocks.slice(0, 3).map((fb) => (
+                <li
+                  key={fb.id}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-background-secondary/50',
+                    fb.completed && 'opacity-60'
+                  )}
+                >
+                  <Timer className="h-4 w-4 shrink-0 text-accent-cyan" aria-hidden />
+                  <span className="text-foreground truncate flex-1">{fb.title}</span>
+                  <span className="text-foreground-subdued text-xs shrink-0 tabular-nums">
+                    {formatTime(fb.start)}–{formatTime(fb.end)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {tasksLoading ? (
