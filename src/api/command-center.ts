@@ -1,0 +1,46 @@
+import { api } from '@/lib/api'
+import type {
+  DashboardCommandCenter,
+  CalendarEvent,
+  QuickTask,
+  ContentDraft,
+  ScheduledPost,
+  Transaction,
+  AgentOutput,
+  GlobalSearchResult,
+} from '@/types/command-center'
+
+const API = '/command-center'
+
+export async function getDashboardItems(): Promise<DashboardCommandCenter[]> {
+  return api.get<DashboardCommandCenter[]>(`${API}/dashboard`)
+}
+
+export async function getTodayEvents(): Promise<CalendarEvent[]> {
+  return api.get<CalendarEvent[]>(`${API}/today/events`)
+}
+
+export async function getQuickTasks(): Promise<QuickTask[]> {
+  return api.get<QuickTask[]>(`${API}/today/tasks`)
+}
+
+export async function getContentDrafts(): Promise<ContentDraft[]> {
+  return api.get<ContentDraft[]>(`${API}/content/drafts`)
+}
+
+export async function getScheduledPosts(): Promise<ScheduledPost[]> {
+  return api.get<ScheduledPost[]>(`${API}/content/scheduled`)
+}
+
+export async function getRecentTransactions(): Promise<Transaction[]> {
+  return api.get<Transaction[]>(`${API}/finance/transactions`)
+}
+
+export async function getAgentActivity(): Promise<AgentOutput[]> {
+  return api.get<AgentOutput[]>(`${API}/agent/activity`)
+}
+
+export async function globalSearch(query: string): Promise<GlobalSearchResult[]> {
+  if (!query.trim()) return []
+  return api.get<GlobalSearchResult[]>(`${API}/search?q=${encodeURIComponent(query)}`)
+}

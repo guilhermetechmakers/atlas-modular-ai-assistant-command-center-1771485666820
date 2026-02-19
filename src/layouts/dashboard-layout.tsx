@@ -12,16 +12,16 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
-  Search,
   Menu,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { GlobalSearchBar } from '@/components/command-center'
 
 const SIDEBAR_COLLAPSED_KEY = 'atlas-sidebar-collapsed'
 
 const navItems = [
-  { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { to: '/dashboard', label: 'Command Center', icon: LayoutDashboard },
   { to: '/dashboard/projects', label: 'Projects', icon: FolderGit2 },
   { to: '/dashboard/content', label: 'Content', icon: FileText },
   { to: '/dashboard/research', label: 'Research', icon: BookOpen },
@@ -209,16 +209,8 @@ export function DashboardLayout() {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="flex-1">
-            <div className="relative max-w-xl">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground-subdued" aria-hidden />
-              <input
-                type="search"
-                placeholder="Search repos, notes, events..."
-                className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-4 text-sm text-foreground-muted placeholder:text-foreground-subdued focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                aria-label="Global search"
-              />
-            </div>
+          <div className="flex-1 flex justify-center">
+            <GlobalSearchBar />
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
