@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Calendar, ListTodo, ArrowRight } from 'lucide-react'
+import { Calendar, ListTodo, ArrowRight, CalendarX2 } from 'lucide-react'
 import { useTodayEvents, useQuickTasks } from '@/hooks/use-command-center'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -16,10 +16,12 @@ export function TodayPanel() {
   const { data: tasks = [], isLoading: tasksLoading } = useQuickTasks()
 
   return (
-    <Card className="h-full transition-all duration-200 hover:shadow-card-hover">
+    <Card className="h-full transition-all duration-200 hover:shadow-card-hover border-border hover:border-border-strong">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-accent-purple" aria-hidden />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-purple/15 text-accent-purple">
+            <Calendar className="h-5 w-5" aria-hidden />
+          </div>
           <CardTitle>Today</CardTitle>
         </div>
         <CardDescription>Calendar events, focus blocks, and quick tasks</CardDescription>
@@ -29,19 +31,29 @@ export function TodayPanel() {
           <div className="space-y-2">
             <Skeleton className="h-12 w-full rounded-lg" />
             <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-lg" />
           </div>
         ) : events.length === 0 ? (
-          <div className="rounded-lg border border-border bg-background-secondary/50 p-6 text-center text-foreground-subdued text-sm">
-            No events today. Connect Google Calendar to see your schedule.
+          <div className="rounded-xl border border-border bg-background-secondary/50 p-6 text-center">
+            <CalendarX2 className="mx-auto h-10 w-10 text-foreground-subdued/60 mb-3" aria-hidden />
+            <p className="text-sm text-foreground-muted mb-1">No events today</p>
+            <p className="text-xs text-foreground-subdued mb-4">
+              Connect Google Calendar to see your schedule
+            </p>
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/dashboard/calendar" className="inline-flex items-center gap-2">
+                Open Calendar <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </Button>
           </div>
         ) : (
           <ul className="space-y-2" aria-label="Today's events">
             {events.slice(0, 5).map((ev) => (
               <li
                 key={ev.id}
-                className="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-sm"
+                className="flex items-center gap-3 rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-background-secondary/50"
               >
-                <span className="text-foreground-subdued shrink-0">{formatTime(ev.start)}</span>
+                <span className="text-foreground-subdued shrink-0 tabular-nums">{formatTime(ev.start)}</span>
                 <span className="text-foreground truncate">{ev.title}</span>
               </li>
             ))}
@@ -70,7 +82,7 @@ export function TodayPanel() {
           </div>
         )}
 
-        <Button variant="secondary" className="w-full mt-4" asChild>
+        <Button variant="secondary" className="w-full mt-4 min-h-[44px] hover:scale-[1.01] transition-transform" asChild>
           <Link to="/dashboard/calendar" className="inline-flex items-center gap-2">
             Open Calendar <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Activity, Bot, ArrowRight } from 'lucide-react'
+import { Activity, Bot, ArrowRight, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAgentActivity } from '@/hooks/use-command-center'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -24,10 +24,12 @@ export function AgentActivityFeed() {
   const pending = items.filter((i) => i.pendingApproval)
 
   return (
-    <Card className="h-full transition-all duration-200 hover:shadow-card-hover">
+    <Card className="h-full transition-all duration-200 hover:shadow-card-hover border-border hover:border-border-strong">
       <CardHeader>
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" aria-hidden />
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+            <Activity className="h-5 w-5" aria-hidden />
+          </div>
           <CardTitle>Agent activity</CardTitle>
           {pending.length > 0 && (
             <Badge variant="warning" className="ml-1">{pending.length} pending</Badge>
@@ -42,8 +44,17 @@ export function AgentActivityFeed() {
             <Skeleton className="h-14 w-full rounded-lg" />
           </div>
         ) : items.length === 0 ? (
-          <div className="rounded-lg border border-border bg-background-secondary/50 p-6 text-center text-foreground-subdued text-sm">
-            No agent activity yet. Ask &quot;What should I do today?&quot; to get started.
+          <div className="rounded-xl border border-border bg-background-secondary/50 p-6 text-center">
+            <MessageCircle className="mx-auto h-10 w-10 text-foreground-subdued/60 mb-3" aria-hidden />
+            <p className="text-sm text-foreground-muted mb-1">No agent activity yet</p>
+            <p className="text-xs text-foreground-subdued mb-4">
+              Ask &quot;What should I do today?&quot; above to get started
+            </p>
+            <Button variant="primary" size="sm" asChild>
+              <Link to="/dashboard/agent-builder-skills-registry" state={{ prompt: 'What should I do today?' }} className="inline-flex items-center gap-2">
+                Ask agent <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </Button>
           </div>
         ) : (
           <ul className="space-y-2" aria-label="Agent activity">
@@ -51,10 +62,10 @@ export function AgentActivityFeed() {
               <li
                 key={item.id}
                 className={cn(
-                  'rounded-lg border px-3 py-2 text-sm',
+                  'rounded-lg border px-3 py-2.5 text-sm transition-all duration-200',
                   item.pendingApproval
-                    ? 'border-primary/50 bg-primary/5'
-                    : 'border-border'
+                    ? 'border-primary/50 bg-primary/5 hover:bg-primary/10'
+                    : 'border-border hover:border-border-strong hover:bg-background-secondary/50'
                 )}
               >
                 <div className="flex items-start gap-2">
@@ -64,10 +75,10 @@ export function AgentActivityFeed() {
                     <p className="text-xs text-foreground-subdued mt-1">{formatRelative(item.createdAt)}</p>
                     {item.pendingApproval && (
                       <div className="flex gap-2 mt-2">
-                        <Button size="sm" variant="primary" className="h-7 text-xs">
+                        <Button size="sm" variant="primary" className="h-8 text-xs min-h-[32px]">
                           Approve
                         </Button>
-                        <Button size="sm" variant="ghost" className="h-7 text-xs">
+                        <Button size="sm" variant="ghost" className="h-8 text-xs min-h-[32px]">
                           Dismiss
                         </Button>
                       </div>
@@ -78,7 +89,7 @@ export function AgentActivityFeed() {
             ))}
           </ul>
         )}
-        <Button variant="secondary" className="w-full mt-4" asChild>
+        <Button variant="secondary" className="w-full mt-4 min-h-[44px] hover:scale-[1.01] transition-transform" asChild>
           <Link to="/dashboard/agent-builder-skills-registry" className="inline-flex items-center gap-2">
             Agent Builder <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>

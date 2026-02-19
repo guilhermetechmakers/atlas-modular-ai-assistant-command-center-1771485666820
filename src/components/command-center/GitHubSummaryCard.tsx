@@ -20,10 +20,12 @@ export function GitHubSummaryCard({ selectedRepoId, onRepoChange }: GitHubSummar
   const issues = activity.filter((a) => a.type === 'issue')
 
   return (
-    <Card className="h-full transition-all duration-200 hover:shadow-card-hover">
+    <Card className="h-full transition-all duration-200 hover:shadow-card-hover border-border hover:border-border-strong">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <FolderGit2 className="h-5 w-5 text-primary" aria-hidden />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+            <FolderGit2 className="h-5 w-5" aria-hidden />
+          </div>
           <CardTitle>GitHub summary</CardTitle>
         </div>
         <CardDescription>Recent commits, PRs, and issues</CardDescription>
@@ -31,7 +33,7 @@ export function GitHubSummaryCard({ selectedRepoId, onRepoChange }: GitHubSummar
           <select
             value={repoId}
             onChange={(e) => onRepoChange?.(e.target.value)}
-            className="mt-2 rounded-lg border border-border bg-background-secondary px-3 py-2 text-sm text-foreground-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="mt-2 rounded-lg border border-border bg-background-secondary px-3 py-2 text-sm text-foreground-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[40px]"
             aria-label="Select repository"
           >
             {repos.map((r) => (
@@ -50,17 +52,31 @@ export function GitHubSummaryCard({ selectedRepoId, onRepoChange }: GitHubSummar
             <Skeleton className="h-10 w-full rounded-lg" />
           </div>
         ) : !repoId ? (
-          <div className="rounded-lg border border-border bg-background-secondary/50 p-6 text-center text-foreground-subdued text-sm">
-            Connect a repository in Projects to see activity.
+          <div className="rounded-xl border border-border bg-background-secondary/50 p-6 text-center">
+            <FolderGit2 className="mx-auto h-10 w-10 text-foreground-subdued/60 mb-3" aria-hidden />
+            <p className="text-sm text-foreground-muted mb-4">Connect a repository in Projects to see activity</p>
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/dashboard/projects" className="inline-flex items-center gap-2">
+                Open Projects <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </Button>
           </div>
         ) : activity.length === 0 ? (
-          <div className="rounded-lg border border-border bg-background-secondary/50 p-6 text-center text-foreground-subdued text-sm">
-            No recent activity in this repo.
+          <div className="rounded-xl border border-border bg-background-secondary/50 p-6 text-center">
+            <p className="text-sm text-foreground-muted mb-4">No recent activity in this repo</p>
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/dashboard/projects" className="inline-flex items-center gap-2">
+                Open Projects <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </Button>
           </div>
         ) : (
           <ul className="space-y-2" aria-label="Recent activity">
             {activity.slice(0, 6).map((a) => (
-              <li key={a.id} className="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-sm">
+              <li
+                key={a.id}
+                className="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-sm transition-colors hover:border-border-strong hover:bg-background-secondary/50"
+              >
                 {a.type === 'commit' && <GitCommit className="h-4 w-4 text-foreground-subdued shrink-0" aria-hidden />}
                 {a.type === 'pull_request' && <GitPullRequest className="h-4 w-4 text-accent-cyan shrink-0" aria-hidden />}
                 {a.type === 'issue' && <AlertCircle className="h-4 w-4 text-accent-amber shrink-0" aria-hidden />}
@@ -75,7 +91,7 @@ export function GitHubSummaryCard({ selectedRepoId, onRepoChange }: GitHubSummar
             {commits.length} commits · {prs.length} PRs · {issues.length} issues
           </span>
         </div>
-        <Button variant="secondary" className="w-full mt-4" asChild>
+        <Button variant="secondary" className="w-full mt-4 min-h-[44px] hover:scale-[1.01] transition-transform" asChild>
           <Link to="/dashboard/projects" className="inline-flex items-center gap-2">
             Open Projects <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>

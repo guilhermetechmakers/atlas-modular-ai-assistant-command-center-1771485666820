@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { DashboardLayout } from '@/layouts/dashboard-layout'
 import { LandingPage } from '@/pages/landing'
 import { LoginPage } from '@/pages/login'
@@ -16,6 +16,7 @@ export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignupPage /> },
   { path: '/login-/-signup', element: <LoginSignupPage /> },
+  { path: '/dashboard-/-command-center', element: <Navigate to="/dashboard" replace /> },
   {
     path: '/dashboard',
     element: <DashboardLayout />,

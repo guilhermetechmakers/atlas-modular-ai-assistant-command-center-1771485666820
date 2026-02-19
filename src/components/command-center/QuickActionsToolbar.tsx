@@ -30,7 +30,7 @@ export function QuickActionsToolbar({
       <Button
         variant="primary"
         size="sm"
-        className="inline-flex items-center gap-2 hover:scale-[1.02] transition-transform"
+        className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.02] active:scale-[0.98] transition-transform"
         onClick={onCreateIssue}
         asChild={!onCreateIssue}
       >
@@ -47,7 +47,7 @@ export function QuickActionsToolbar({
       <Button
         variant="secondary"
         size="sm"
-        className="inline-flex items-center gap-2 hover:scale-[1.02] transition-transform"
+        className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.02] active:scale-[0.98] transition-transform"
         onClick={onNewNote}
         asChild={!onNewNote}
       >
@@ -64,7 +64,7 @@ export function QuickActionsToolbar({
       <Button
         variant="secondary"
         size="sm"
-        className="inline-flex items-center gap-2 hover:scale-[1.02] transition-transform"
+        className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.02] active:scale-[0.98] transition-transform"
         onClick={onCreateAgent}
         asChild={!onCreateAgent}
       >
@@ -75,7 +75,7 @@ export function QuickActionsToolbar({
       <Button
         variant="outline"
         size="sm"
-        className="inline-flex items-center gap-2 hover:scale-[1.02] transition-transform"
+        className="inline-flex items-center gap-2 min-h-[44px] hover:scale-[1.02] active:scale-[0.98] transition-transform"
         onClick={onImportCsv}
       >
         <Upload className="h-4 w-4" aria-hidden /> Import CSV
