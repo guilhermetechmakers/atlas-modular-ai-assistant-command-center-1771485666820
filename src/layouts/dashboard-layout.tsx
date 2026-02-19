@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
+  Link2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -37,6 +38,7 @@ const navItems = [
 ]
 
 const bottomItems = [
+  { to: '/dashboard/integrations/github', label: 'GitHub Integration', icon: Link2 },
   { to: '/dashboard/admin', label: 'Admin', icon: Shield },
 ]
 

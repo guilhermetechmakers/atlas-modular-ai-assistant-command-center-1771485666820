@@ -7,6 +7,8 @@ import { LoginSignupPage } from '@/pages/Login/Signup'
 import { DashboardOverviewPage } from '@/pages/dashboard-overview'
 import CommandCenterPage from '@/pages/Dashboard/CommandCenter'
 import ProjectsPage from '@/pages/Dashboard/ProjectsPage'
+import GitHubOAuthCallbackPage from '@/pages/GitHubOAuthCallback'
+import GitHubIntegrationAdminPage from '@/pages/Dashboard/GitHubIntegrationAdmin'
 import ResearchPage from '@/pages/Dashboard/ResearchPage'
 import ContentPipelinePage from '@/pages/ContentPipeline'
 import { DashboardPlaceholderPage } from '@/pages/dashboard-placeholder'
@@ -18,6 +20,7 @@ export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignupPage /> },
+  { path: '/github/callback', element: <GitHubOAuthCallbackPage /> },
   { path: '/login-/-signup', element: <LoginSignupPage /> },
   {
     path: '/dashboard-/-command-center',
@@ -46,6 +49,7 @@ export const router = createBrowserRouter([
       { path: 'settings', element: <DashboardPlaceholderPage /> },
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'admin', element: <DashboardPlaceholderPage /> },
+      { path: 'integrations/github', element: <GitHubIntegrationAdminPage /> },
     ],
   },
   { path: '/docs', element: <DocsPlaceholder /> },

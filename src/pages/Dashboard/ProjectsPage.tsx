@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 import {
   FolderGit2,
   GitCommit,
@@ -205,7 +205,21 @@ export default function ProjectsPage() {
             <Skeleton className="h-10 w-64 rounded-lg" />
           ) : repos.length === 0 ? (
             <div className="rounded-lg border border-border bg-background-secondary/50 p-6 text-center text-foreground-subdued text-sm">
-              No repositories connected. Connect your GitHub account in Settings to see repos here.
+              <p className="mb-4">No repositories connected. Connect your GitHub account to see repos here.</p>
+              <Button size="sm" asChild>
+                <a
+                  href={`https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID ?? ''}&scope=repo,read:user&redirect_uri=${encodeURIComponent(window.location.origin + '/github/callback')}`}
+                  className="inline-flex items-center gap-2"
+                >
+                  <FolderGit2 className="h-4 w-4" aria-hidden />
+                  Connect GitHub
+                </a>
+              </Button>
+              <p className="mt-3 text-xs">
+                <Link to="/dashboard/integrations/github" className="text-primary hover:underline">
+                  View integration status
+                </Link>
+              </p>
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-2">

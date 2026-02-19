@@ -54,10 +54,15 @@ export function GitHubSummaryCard({ selectedRepoId, onRepoChange }: GitHubSummar
         ) : !repoId ? (
           <div className="rounded-xl border border-border bg-background-secondary/50 p-6 text-center">
             <FolderGit2 className="mx-auto h-10 w-10 text-foreground-subdued/60 mb-3" aria-hidden />
-            <p className="text-sm text-foreground-muted mb-4">Connect a repository in Projects to see activity</p>
+            <p className="text-sm text-foreground-muted mb-4">Connect GitHub to see repos and activity</p>
             <Button variant="secondary" size="sm" asChild>
-              <Link to="/dashboard/projects" className="inline-flex items-center gap-2">
-                Open Projects <ArrowRight className="h-4 w-4" aria-hidden />
+              <Link to="/dashboard/integrations/github" className="inline-flex items-center gap-2">
+                Connect GitHub <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild className="mt-2">
+              <Link to="/dashboard/projects" className="inline-flex items-center gap-2 text-foreground-subdued">
+                Open Projects
               </Link>
             </Button>
           </div>
