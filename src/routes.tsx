@@ -6,6 +6,7 @@ import { SignupPage } from '@/pages/signup'
 import { LoginSignupPage } from '@/pages/Login/Signup'
 import { DashboardOverviewPage } from '@/pages/dashboard-overview'
 import { DashboardPlaceholderPage } from '@/pages/dashboard-placeholder'
+import SkillsRegistryPage from '@/pages/AgentBuilder/SkillsRegistry'
 import { NotFoundPage } from '@/pages/not-found'
 
 export const router = createBrowserRouter([
@@ -23,7 +24,8 @@ export const router = createBrowserRouter([
       { path: 'research', element: <DashboardPlaceholderPage /> },
       { path: 'calendar', element: <DashboardPlaceholderPage /> },
       { path: 'finance', element: <DashboardPlaceholderPage /> },
-      { path: 'agents', element: <DashboardPlaceholderPage /> },
+      { path: 'agents', element: <SkillsRegistryPage /> },
+      { path: 'agent-builder-skills-registry', element: <SkillsRegistryPage /> },
       { path: 'settings', element: <DashboardPlaceholderPage /> },
       { path: 'admin', element: <DashboardPlaceholderPage /> },
     ],
