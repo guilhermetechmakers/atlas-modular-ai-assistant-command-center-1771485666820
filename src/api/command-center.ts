@@ -1,4 +1,5 @@
 import { api } from '@/lib/api'
+import { supabase } from '@/lib/supabase'
 import type {
   DashboardCommandCenter,
   CalendarEvent,
@@ -8,7 +9,8 @@ import type {
   ScheduledPost,
   Transaction,
   AgentOutput,
-  GlobalSearchResult,
+  GlobalSearchResponse,
+  GlobalSearchResultType,
 } from '@/types/command-center'
 
 const API = '/command-center'
@@ -83,9 +85,39 @@ export async function getAgentActivity(): Promise<AgentOutput[]> {
   return api.get<AgentOutput[]>(`${API}/agent/activity`)
 }
 
-export async function globalSearch(query: string): Promise<GlobalSearchResult[]> {
-  if (!query.trim()) return []
-  return api.get<GlobalSearchResult[]>(`${API}/search?q=${encodeURIComponent(query)}`)
+export interface GlobalSearchParams {
+  query: string
+  types?: GlobalSearchResultType[]
+  limit?: number
+  offset?: number
+  /** Phase 2: enable vector/semantic search when available */
+  useSemantic?: boolean
+}
+
+export async function globalSearch(
+  params: string | GlobalSearchParams
+): Promise<GlobalSearchResponse> {
+  const opts = typeof params === 'string'
+    ? { query: params, types: undefined, limit: 20, offset: 0 }
+    : {
+        query: params.query,
+        types: params.types,
+        limit: params.limit ?? 20,
+        offset: params.offset ?? 0,
+      }
+  if (!opts.query.trim()) return { results: [], hasMore: false }
+
+  const { data, error } = await supabase.functions.invoke<GlobalSearchResponse>('command-center', {
+    body: {
+      path: 'search',
+      q: opts.query.trim(),
+      types: opts.types,
+      limit: opts.limit,
+      offset: opts.offset,
+    },
+  })
+  if (error) throw error
+  return data ?? { results: [], hasMore: false }
 }
 
 export async function approveAgentOutput(

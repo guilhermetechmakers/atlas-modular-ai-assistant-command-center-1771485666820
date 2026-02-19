@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import * as commandCenterApi from '@/api/command-center'
-import type { GlobalSearchResult } from '@/types/command-center'
+import type { GlobalSearchResult, GlobalSearchResultType } from '@/types/command-center'
 
 export const commandCenterKeys = {
   all: ['command-center'] as const,
@@ -13,7 +13,8 @@ export const commandCenterKeys = {
   scheduledPosts: () => [...commandCenterKeys.all, 'content', 'scheduled'] as const,
   transactions: () => [...commandCenterKeys.all, 'finance', 'transactions'] as const,
   agentActivity: () => [...commandCenterKeys.all, 'agent', 'activity'] as const,
-  search: (q: string) => [...commandCenterKeys.all, 'search', q] as const,
+  search: (q: string, types?: GlobalSearchResultType[], offset?: number) =>
+    [...commandCenterKeys.all, 'search', q, types ?? [], offset ?? 0] as const,
 }
 
 async function safeGet<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
@@ -135,11 +136,35 @@ export function useAgentActivity() {
   })
 }
 
-export function useGlobalSearch(query: string) {
+export interface UseGlobalSearchParams {
+  query: string
+  types?: GlobalSearchResultType[]
+  limit?: number
+  offset?: number
+  /** Phase 2: enable vector/semantic search when available */
+  useSemantic?: boolean
+}
+
+export function useGlobalSearch(params: string | UseGlobalSearchParams) {
+  const opts = typeof params === 'string'
+    ? { query: params, types: undefined, limit: 20, offset: 0 }
+    : {
+        query: params.query,
+        types: params.types,
+        limit: params.limit ?? 20,
+        offset: params.offset ?? 0,
+      }
+
   return useQuery({
-    queryKey: commandCenterKeys.search(query),
-    queryFn: (): Promise<GlobalSearchResult[]> => commandCenterApi.globalSearch(query),
-    enabled: query.trim().length >= 2,
+    queryKey: commandCenterKeys.search(opts.query, opts.types, opts.offset),
+    queryFn: async (): Promise<{ results: GlobalSearchResult[]; hasMore: boolean }> =>
+      commandCenterApi.globalSearch({
+        query: opts.query,
+        types: opts.types,
+        limit: opts.limit,
+        offset: opts.offset,
+      }),
+    enabled: opts.query.trim().length >= 2,
   })
 }
 

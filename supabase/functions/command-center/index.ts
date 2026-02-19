@@ -1,7 +1,7 @@
 // Command Center – dashboard data API (server-side only)
 // Handles: dashboard items, today events/tasks, content drafts/scheduled,
 // finance transactions, agent activity, global search
-// Invoke: GET ?path=dashboard|today/events|today/tasks|content/drafts|content/scheduled|finance/transactions|agent/activity|search&q=...
+// Invoke: GET ?path=...&q=... or POST body { path, q, types?, limit?, offset? }
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -41,12 +41,13 @@ Deno.serve(async (req) => {
 
     const url = new URL(req.url)
     let path = url.searchParams.get('path') ?? ''
-    const q = url.searchParams.get('q') ?? ''
+    let q = url.searchParams.get('q') ?? ''
 
     let postBody: Record<string, unknown> = {}
     if (req.method === 'POST' && req.body) {
       postBody = (await req.json().catch(() => ({}))) as Record<string, unknown>
       if (postBody.path) path = String(postBody.path)
+      if (postBody.q != null) q = String(postBody.q)
       if (postBody.action && postBody.id) path = 'agent/approve'
     }
 
@@ -133,69 +134,55 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: true, action })
     }
 
-    // Global search – fuzzy across repos, notes, events, transactions
+    // Global search – full-text across notes, events, agents; filter facets, pagination
     if (path === 'search' && q.trim().length >= 2) {
-      const results: Array<{ type: string; id: string; title: string; subtitle?: string }> = []
-      if (!userId) return jsonResponse(results)
+      const results: Array<{ type: string; id: string; title: string; subtitle?: string; score?: number }> = []
+      if (!userId) return jsonResponse({ results, hasMore: false })
       const query = q.trim()
+      const types = postBody.types as string[] | undefined
+      const limit = Math.min(Math.max(1, Number(postBody.limit) || 20), 50)
+      const offset = Math.max(0, Number(postBody.offset) || 0)
 
-      // Search research_notes – use full-text search RPC when available, else ilike
       try {
-        const { data: notes } = await supabase.rpc('research_notes_search', {
+        const { data: rows, error } = await supabase.rpc('global_search', {
           p_user_id: userId,
           p_query: query,
+          p_types: types && types.length > 0 ? types : null,
+          p_limit: limit + 1,
+          p_offset: offset,
         })
-        const noteList = Array.isArray(notes) ? notes : []
-        for (const n of noteList.slice(0, 5)) {
+        if (error) throw error
+        const list = Array.isArray(rows) ? rows : []
+        const hasMore = list.length > limit
+        const items = list.slice(0, limit)
+        for (const r of items) {
           results.push({
-            type: 'note',
-            id: n.id ?? '',
-            title: n.title ?? '',
-            subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : 'Research note',
+            type: r.type ?? 'note',
+            id: r.id ?? '',
+            title: r.title ?? '',
+            subtitle: r.subtitle ?? undefined,
+            score: r.score,
           })
         }
-        if (noteList.length === 0) {
-          const { data: ilikeNotes } = await supabase
-            .from('research_notes')
-            .select('id, title, summary')
-            .eq('user_id', userId)
-            .ilike('title', `%${query}%`)
-            .limit(5)
-          if (ilikeNotes?.length) {
-            for (const n of ilikeNotes) {
-              results.push({
-                type: 'note',
-                id: n.id,
-                title: n.title ?? '',
-                subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : 'Research note',
-              })
-            }
-          }
-        }
+        return jsonResponse({ results, hasMore })
       } catch {
-        try {
-          const { data: notes } = await supabase
-            .from('research_notes')
-            .select('id, title, summary')
-            .eq('user_id', userId)
-            .ilike('title', `%${query}%`)
-            .limit(5)
-          if (notes?.length) {
-            for (const n of notes) {
-              results.push({
-                type: 'note',
-                id: n.id,
-                title: n.title ?? '',
-                subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : 'Research note',
-              })
-            }
-          }
-        } catch {
-          // ignore
-        }
+        // Fallback: ilike on research_notes only
+        const { data: notes } = await supabase
+          .from('research_notes')
+          .select('id, title, summary')
+          .eq('user_id', userId)
+          .ilike('title', `%${query}%`)
+          .limit(limit + 1)
+          .range(offset, offset + limit)
+        const noteList = (notes ?? []).slice(0, limit)
+        const noteResults = noteList.map((n) => ({
+          type: 'note',
+          id: n.id,
+          title: n.title ?? '',
+          subtitle: n.summary ? String(n.summary).slice(0, 60) + '…' : undefined,
+        }))
+        return jsonResponse({ results: noteResults, hasMore: (notes?.length ?? 0) > limit })
       }
-
-      return jsonResponse(results)
     }
 
     return errorResponse('Invalid path', 400)

@@ -58,9 +58,17 @@ export interface AgentOutput {
   pendingApproval?: boolean
 }
 
+export type GlobalSearchResultType = 'repo' | 'note' | 'event' | 'transaction' | 'agent' | 'issue'
+
 export interface GlobalSearchResult {
-  type: 'repo' | 'note' | 'event' | 'transaction'
+  type: GlobalSearchResultType
   id: string
   title: string
   subtitle?: string
+  score?: number
+}
+
+export interface GlobalSearchResponse {
+  results: GlobalSearchResult[]
+  hasMore: boolean
 }
