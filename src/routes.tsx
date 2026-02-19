@@ -7,6 +7,7 @@ import { LoginSignupPage } from '@/pages/Login/Signup'
 import { DashboardOverviewPage } from '@/pages/dashboard-overview'
 import CommandCenterPage from '@/pages/Dashboard/CommandCenter'
 import ProjectsPage from '@/pages/Dashboard/ProjectsPage'
+import ResearchPage from '@/pages/Dashboard/ResearchPage'
 import { DashboardPlaceholderPage } from '@/pages/dashboard-placeholder'
 import SkillsRegistryPage from '@/pages/AgentBuilder/SkillsRegistry'
 import { NotFoundPage } from '@/pages/not-found'
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
       { path: 'overview', element: <DashboardOverviewPage /> },
       { path: 'projects', element: <ProjectsPage /> },
       { path: 'content', element: <DashboardPlaceholderPage /> },
-      { path: 'research', element: <DashboardPlaceholderPage /> },
+      { path: 'research', element: <ResearchPage /> },
       { path: 'calendar', element: <DashboardPlaceholderPage /> },
       { path: 'finance', element: <DashboardPlaceholderPage /> },
       { path: 'agents', element: <SkillsRegistryPage /> },
