@@ -11,6 +11,7 @@ import ResearchPage from '@/pages/Dashboard/ResearchPage'
 import ContentPipelinePage from '@/pages/ContentPipeline'
 import { DashboardPlaceholderPage } from '@/pages/dashboard-placeholder'
 import SkillsRegistryPage from '@/pages/AgentBuilder/SkillsRegistry'
+import NotificationsPage from '@/pages/Dashboard/NotificationsPage'
 import { NotFoundPage } from '@/pages/not-found'
 
 export const router = createBrowserRouter([
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       { path: 'agents', element: <SkillsRegistryPage /> },
       { path: 'agent-builder-skills-registry', element: <SkillsRegistryPage /> },
       { path: 'settings', element: <DashboardPlaceholderPage /> },
+      { path: 'notifications', element: <NotificationsPage /> },
       { path: 'admin', element: <DashboardPlaceholderPage /> },
     ],
   },

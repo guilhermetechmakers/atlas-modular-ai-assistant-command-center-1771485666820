@@ -8,6 +8,7 @@ import {
   Calendar,
   Wallet,
   Bot,
+  Bell,
   Settings,
   Shield,
   ChevronLeft,
@@ -17,6 +18,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { GlobalSearchBar } from '@/components/command-center'
+import { NotificationCenter } from '@/components/notifications'
 
 const SIDEBAR_COLLAPSED_KEY = 'atlas-sidebar-collapsed'
 
@@ -28,6 +30,7 @@ const navItems = [
   { to: '/dashboard/calendar', label: 'Calendar & Travel', icon: Calendar },
   { to: '/dashboard/finance', label: 'Finance', icon: Wallet },
   { to: '/dashboard/agent-builder-skills-registry', label: 'Agent Builder', icon: Bot },
+  { to: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { to: '/dashboard/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -211,6 +214,9 @@ export function DashboardLayout() {
           </Button>
           <div className="flex-1 flex justify-center">
             <GlobalSearchBar />
+          </div>
+          <div className="flex items-center gap-2">
+            <NotificationCenter />
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">

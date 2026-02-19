@@ -10,6 +10,7 @@ import {
   QuickActionsToolbar,
   NotificationsAuditLogQuickLink,
 } from '@/components/command-center'
+import { NotificationBanners } from '@/components/notifications'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -37,6 +38,9 @@ export default function CommandCenterPage() {
         </div>
         <NotificationsAuditLogQuickLink />
       </header>
+
+      {/* High-priority notification banners */}
+      <NotificationBanners />
 
       {/* Agent CTA: "What should I do today?" */}
       <section
